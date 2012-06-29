@@ -41,7 +41,15 @@ while(my $json = <STDIN>){
           $handler->dbh->do("use $db");
           $result = eval { $handler->dbh->selectall_arrayref( "explain $select", +{ Slice => {} } ); };
         }else{
-          &if_undef;
+          my $databases = $handler->dbh->selectcol_arrayref("show databases");
+          foreach (@$databases) {
+            $handler->dbh->do("use $_");
+            my $result = eval { $handler->dbh->selectall_arrayref( "explain $select", +{ Slice => {} } ); };
+            if (defined $result) {
+              $db = $_; 
+              last;
+            }   
+          }
         }
 
         # explain結果が$resultに入ってないとdieしてwhile抜けちゃうので定義済みの場合のみ
@@ -51,19 +59,6 @@ while(my $json = <STDIN>){
             my %explains;
             %explains = (%explains, ($key  => $result->[$i]));
             %data = (%data, %explains);
-          }
-        }else{
-          &if_undef;
-        }
-        sub if_undef {
-          my $databases = $handler->dbh->selectcol_arrayref("show databases");
-          foreach (@$databases) {
-            $handler->dbh->do("use $_");
-            my $result = eval { $handler->dbh->selectall_arrayref( "explain $select", +{ Slice => {} } ); };
-            if (defined $result) {
-              $db = $_;
-              last;
-            }
           }
         }
 
