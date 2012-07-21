@@ -3,10 +3,11 @@
 use strict;
 use warnings;
 use Data::Dumper;
-$|=1;
 use DBIx::Handler;
 use JSON::XS;
 use Data::MessagePack;
+
+$|=1;
 
 my $mp = Data::MessagePack->new();
 
@@ -22,40 +23,29 @@ $handler->dbh->do("SELECT SLEEP($long_query_time)");
 while(my $json = <STDIN>){
   # STDINがJSONじゃなかったら何もしない
   my $decode = eval { decode_json($json); };
-  next if ($@);
+  next if $@;
 
-  # decodeしたJSONに"sql"キーがあり、そこにSELECT文が含まれていなければ、
-  # そのままMessagePackで放出する
-  my $select;
-  if (defined $decode->{sql} && $decode->{sql} =~ /(select[^\;]+)/i){
-    $select = $1;
-  }else{
+  # SQLがない場合はスキップ
+  unless (defined $decode->{sql}) {
     print $mp->pack($decode);
     next;
   }
 
-  # "use database"があれば、データベースを切り替える
-  if ($decode->{sql} =~ /^use ([^\;]+)/i){
+  # SQLの内容を解析する
+  if ($decode->{sql} =~ /^use ([^\;]+)/i) {    # USE DATABASE
+    $handler->dbh->do("use $1");
     $db = $1;
-    $handler->dbh->do("use $db");
   }
-
-  unless (defined $db){
-    print $mp->pack($decode);
-    next;
-  }
-
-  my $data   = $decode;
-  my $result = eval { $handler->dbh->selectall_arrayref( "explain $select", +{Slice => {}});};
-
-  # explain結果が$resultに入ってないとdieしてwhile抜けちゃうので定義済みの場合のみ
-  if (defined $result){
-    for (my $i=0;$i < (@$result);$i++){
-      $data->{"explain$i"} = $result->[$i];
+  elsif ($decode->{sql} =~ /(select[^\;]+)/i) {    # SELECT
+    my $explains = eval {$handler->dbh->selectall_arrayref("explain $1", +{Slice => {}});};
+    next unless @$explains;
+    if (defined $explains) {
+      for (my $i = 0; $i < @$explains; $i++) {
+        $decode->{"explain$i"} = $explains->[$i];
+      }
+      $decode->{database} = $db;
     }
-    # どのDBへのEXPLAINかどうかわかるように。
-    $data->{database} = $db;
   }
 
-  print $mp->pack($data);
+  print $mp->pack($decode);
 }
