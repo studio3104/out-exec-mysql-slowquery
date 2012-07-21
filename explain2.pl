@@ -38,13 +38,11 @@ while(my $json = <STDIN>){
   }
   elsif ($decode->{sql} =~ /(select[^\;]+)/i) {    # SELECT
     my $explains = eval {$handler->dbh->selectall_arrayref("explain $1", +{Slice => {}});};
-    next unless @$explains;
-    if (defined $explains) {
-      for (my $i = 0; $i < @$explains; $i++) {
-        $decode->{"explain$i"} = $explains->[$i];
-      }
-      $decode->{database} = $db;
+    next if $@ or @$explains == 0;
+    for (my $i = 0; $i < @$explains; $i++) {
+      $decode->{"explain$i"} = $explains->[$i];
     }
+    $decode->{database} = $db;
   }
 
   print $mp->pack($decode);
