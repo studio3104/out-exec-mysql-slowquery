@@ -5,7 +5,7 @@
     ================================================== -->
     <section id="collapse">
       <div class="row">
-        <div class="span3">
+        <div class="span2">
           <h3>Summary</h3>
           <div class="well" style="padding: 8px 0;">
           : for $fetched_rows -> $rows {
@@ -22,10 +22,10 @@
               <li><i class="icon-hdd"></i> <: $rows.host :></li>
               <li><i class="icon-globe"></i> <: $rows.host_ip :></li>
               <li class="nav-header">Query Summary</li>
-              <li><i class="icon-time"></i> <: $rows.query_time :> (Query_time)</li>
-              <li><i class="icon-lock"></i> <: $rows.lock_time :> (Lock_time)</li>
-              <li><i class="icon-share"></i> <: $rows.rows_sent :> (Rows_sent)</li>
-              <li><i class="icon-check"></i> <: $rows.rows_examined :> (Rows_examined)</li>
+              <li><i class="icon-time"></i> <: $rows.query_time :></li>
+              <li><i class="icon-lock"></i> <: $rows.lock_time :></li>
+              <li><i class="icon-share"></i> <: $rows.rows_sent :></li>
+              <li><i class="icon-check"></i> <: $rows.rows_examined :></li>
               <li class="nav-header">Database</li>
               <li><i class="icon-book"></i> <: $rows.database :></li>
               <li class="divider"></li>
@@ -36,7 +36,7 @@
           </div> <!-- /well -->
         </div>
 
-        <div class="span9 columns">
+        <div class="span10 columns">
           <h2>Slow queries history <small>click "EXPLAIN" to show Explain and Summary in inner accordions.</small></h2><br>
           <div class="accordion" id="accordion3">
             : for $fetched_rows -> $rows {
@@ -85,7 +85,7 @@
               </div>
             </div>
             : }
-        </div class="span9 columns">
+        </div class="span columns">
       </div>
 
     </div><!-- /container -->

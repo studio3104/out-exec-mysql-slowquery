@@ -6,7 +6,7 @@
 </div>
 
 <div class="row">
-  <div class="span3">
+  <div class="span2">
     <h3>Sort Order</h3>
     <div class="well" style="padding: 8px 0;">
       <ul class="nav nav-list">
@@ -25,7 +25,7 @@
     </div> <!-- /well -->
   </div>
 
-  <div class="span9">
+  <div class="span10">
     <div class="accordion" id="accordion3">
     : for $summarized -> $summary {
       <blockquote>
@@ -79,7 +79,7 @@
     : }
     <!-- for $summarized -> $summary -->
     </div class="accordion" id="accordion3">
-  </div class="span9">
+  </div class="span">
 </div class="row">
 
 </div><!-- /container -->
