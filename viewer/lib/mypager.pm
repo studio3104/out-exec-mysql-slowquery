@@ -13,10 +13,10 @@ sub new {
   my $current_page     = shift;
 
   bless {
-    mojo => $mojo_obj,
-    page => Data::Page->new( $total_entries, $entries_per_page, $current_page ),
+    mojo          => $mojo_obj,
+    page          => Data::Page->new( $total_entries, $entries_per_page, $current_page ),
     total_entries => $total_entries,
-    current_page => $current_page,
+    current_page  => $current_page,
   }, $package;
 }
 
@@ -29,12 +29,27 @@ sub pager {
     next => { url => $url->clone->query( current_page => $self->{current_page} + 1 ) },
     prev => { url => $url->clone->query( current_page => $self->{current_page} - 1 ) },
   };
-  my $url_str = { $self->{current_page} => { class => 'active' }, };
+  my $url_str = {
+    $self->{current_page} => {
+      class => 'active',
+      url   => $url->clone->query( current_page => $self->{current_page} ),
+    },
+  };
 
   for ( $self->{current_page} - 2 .. $self->{current_page} + 2 ) {
     next if ( $_ <= 0 || $_ > $page->last_page );
-    $pager->{prev} = { class => 'disabled' } if ( $self->{current_page} == 1 );
-    $pager->{next} = { class => 'disabled' } if ( $self->{current_page} == $page->last_page );
+    if ( $self->{current_page} == 1 ) {
+      $pager->{prev} = {
+        class => 'disabled',
+        url   => $url->clone->query( current_page => 1 ),
+      };
+    }
+    if ( $self->{current_page} == $page->last_page ) {
+      $pager->{next} = {
+        class => 'disabled',
+        url   => $url->clone->query( current_page => $page->last_page ),
+      };
+    }
     unless ( $_ == $self->{current_page} ) {
       $url_str->{$_} = { url => $url->clone->query( current_page => $_ ) };
     }
