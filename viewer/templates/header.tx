@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title><: $title.title :></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="bootstrap/docs/assets/css/bootstrap.css" rel="stylesheet">
+    <link href="bootstrap/docs/assets/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="bootstrap/docs/assets/css/docs.css" rel="stylesheet">
+    <link href="bootstrap/docs/assets/js/google-code-prettify/prettify.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="bootstrap/docs/assets/ico/apple-touch-icon-57-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="bootstrap/docs/assets/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="bootstrap/docs/assets/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="bootstrap/docs/assets/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="bootstrap/docs/assets/ico/apple-touch-icon-57-precomposed.png">
+
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-146052-10']);
+      _gaq.push(['_trackPageview']);
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </head>
+
+  <body data-spy="scroll" data-target=".subnav" data-offset="50">
+
+
+  <!-- Navbar
+    ================================================== -->
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <button type="button"class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="brand" href="./"><: $title.title :></a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              : for $title.subtitles -> $subtitle {
+                : if $subtitle == $title.me {
+                  <li class="active">
+                : } else {
+                  <li class="">
+                :}
+                <a href="/<: $subtitle :>?host=<: $host :>"><: $subtitle :></a>
+                </li>
+              : }
+              <li class="divider-vertical"></li>
+              <li class=""><a target="_blank" href="http://dev.mysql.com/doc/refman/5.1/ja/optimization.html">Optimization?</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+
+<!-- Masthead
+================================================== -->
+<header class="jumbotron subhead" id="overview">
+<!--  <h1>Slow Query Log Viewer</h1>
+  <p class="lead">オマエラが書いたクソクエリたち</p>
+-->  <div class="subnav navbar-fixed-top">
+    <ul class="nav nav-pills">
+      : for $collections -> $col {
+        : if $col != $host {
+          <li ><a href="?host=<: $col :>"><: $col :></a></li>
+        : } else {
+          <li class="active"><a href="?host=<: $col :>"><: $col :></a></li>
+        : }
+      : }
+    </ul>
+
+: if defined $pager {
+    <div class="container">
+      <div class="pagination">
+        <ul>
+          <li class=<: $pager.prev.class :>><a href=<: $pager.prev.url :>>Prev</a></li>
+          : for $url_str.keys().sort(-> $a, $b { $a <=> $b }) -> $key {
+            : if $key != 'prev' && $key != 'next'{
+              <li class=<: $url_str[$key].class :>>
+                <a href=<: $url_str[$key].url :>><: $key :></a>
+              </li>
+            : }
+          : }
+          <li class=<: $pager.next.class :>><a href=<: $pager.next.url :>>Next</a></li>
+        </ul>
+      </div>
+    </div>
+: }
+  </div>
+</header>

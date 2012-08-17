@@ -1,4 +1,4 @@
-#!/usr/bin/env perl
+package dumpslow;
 
 use MongoDB;
 use strict;
@@ -12,13 +12,11 @@ use Getopt::Long;
 use lib './lib';
 use mypager;
 
-#use dumpslow;
-
 #$ENV{LM_DEBUG} = 'true';
 
 use Mojolicious::Lite;
 plugin 'xslate_renderer';
-
+=pod
 my $title = {
   title     => 'SlowQuerySummarizationTool',
   subtitles => [qw/History Summarize/],
@@ -32,50 +30,9 @@ my $collections;
 foreach (@collection_names) {
   push( @$collections, $_ ) unless ( $_ =~ /\./ );
 }
-
-get "/$title->{subtitles}->[0]" => sub {
-  my $self             = shift;
-  my $entries_per_page = 5;
-  my $host             = $self->param('host') || $collections->[0];
-  my $current_page     = $self->param('current_page') || 1;
-  $title->{me} = $title->{subtitles}->[0];
-
-  my $collection = $database->$host;
-  my $total_entries = $collection->find( { _id => { '$exists' => 1 } } )->count;
-
-  my $page = Data::Page->new( $total_entries, $entries_per_page, $current_page );
-  my $find_result
-    = $collection->find( {}, {} )->limit($entries_per_page)->skip( $page->first - 1 )->sort( { _id => -1 } );
-
-  my $fetched_rows = [];
-  while ( my $obj = $find_result->next ) {
-    if ( $obj->{time} ) {
-      my $dt = $obj->{time}->set_time_zone('Asia/Tokyo');
-      $obj->{date} = $dt->ymd . ' ' . $dt->hms;
-      delete $obj->{time};
-    }
-    $obj->{sql} =~ s/^use .+; //ig;
-    $obj->{sql} =~ s/^SET timestamp=\d+; //ig;
-    delete $obj->{_id};
-    push @$fetched_rows, $obj;
-  }
-
-  my $mypager = mypager->new( $self, $total_entries, $entries_per_page, $current_page );
-  my ( $url_str, $pager ) = $mypager->pager;
-
-  $self->render(
-    handler      => 'tx',
-    title        => $title,
-    url_str      => $url_str,
-    pager        => $pager,
-    fetched_rows => $fetched_rows,
-    collections  => $collections,
-    host         => $host,
-  );
-
-} => 'dd';
-
-get "/$title->{subtitles}->[1]" => sub {
+=cut
+my $sub = sub {
+#get "/$title->{subtitles}->[1]" => sub {
 
   # Copyright (c) 2000-2002, 2005-2008 MySQL AB, 2008, 2009 Sun Microsystems, Inc.
   # Use is subject to license terms.
@@ -108,23 +65,24 @@ get "/$title->{subtitles}->[1]" => sub {
   my $total_entries = $collection->find( { _id => { '$exists' => 1 } } )->count;
   my $find_result   = $collection->find( {}, {} )->limit(50)->sort( { _id => -1 } );
 
-  my $sort_options = {
-    al => { class => "" },
-    ar => { class => "" },
-    at => { class => "" },
-    c  => { class => "" },
-    l  => { class => "" },
-    r  => { class => "" },
-    t  => { class => "" },
+  my $sort_properties = {
+    al => { icon => "icon-lock",  name => "lock time", },
+    ar => { icon => "icon-share", name => "rows sent", },
+    at => { icon => "icon-time",  name => "query time", },
+    c  => { icon => "icon-plus",  name => "count", },
+    l  => { icon => "icon-lock",  name => "lock time", },
+    r  => { icon => "icon-share", name => "rows sent", },
+    t  => { icon => "icon-time",  name => "query time", },
   };
   my $sort_opt = "at";
 
-  foreach my $key ( keys(%$sort_options) ) {
+  foreach my $key ( keys(%$sort_properties) ) {
     if ( $self->param('sort') eq $key ) {
       $sort_opt = $key;
     }
   }
-  $sort_options->{$sort_opt}->{class} = "active";
+  $sort_properties->{$sort_opt}->{active} = 1;
+
 
   # t=time, l=lock time, r=rows
   # at, al, and ar are the corresponding averages
@@ -216,8 +174,6 @@ get "/$title->{subtitles}->[1]" => sub {
     collections => $collections,
     host        => $host,
     title       => $title,
-    sort_opts   => $sort_options,
+    sort_opts   => $sort_properties,
   );
-} => 'gg';
-
-app->start;
+}

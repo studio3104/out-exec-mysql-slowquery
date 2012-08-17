@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+: include "header.tx"
+
+<div class="page-header">
+  <h1>mysqldumpslow <small>summarize slow queries like "mysqldumpslow".</small></h1>
+</div>
+
+<div class="row">
+  <div class="span3">
+    <h3>Sort Order</h3>
+    <div class="well" style="padding: 8px 0;">
+      <ul class="nav nav-list">
+        <li class="nav-header">Average</li>
+        <li class=<: $sort_opts.al.class :>><a href="./<: $title.me :>?host=<: $host :>&sort=al"><i class="icon-lock"></i> lock time</a></li>
+        <li class=<: $sort_opts.ar.class :>><a href="./<: $title.me :>?host=<: $host :>&sort=ar"><i class="icon-share"></i> rows sent</a></li>
+        <li class=<: $sort_opts.at.class :>><a href="./<: $title.me :>?host=<: $host :>&sort=at"><i class="icon-time"></i> query time</a></li>
+        <li class="nav-header">Addition</li>
+        <li class=<: $sort_opts.c.class :>><a href="./<: $title.me :>?host=<: $host :>&sort=c"><i class="icon-plus"></i> count</a></li>
+        <li class=<: $sort_opts.l.class :>><a href="./<: $title.me :>?host=<: $host :>&sort=l"><i class="icon-lock"></i> lock time</a></li>
+        <li class=<: $sort_opts.r.class :>><a href="./<: $title.me :>?host=<: $host :>&sort=r"><i class="icon-share"></i> rows sent</a></li>
+        <li class=<: $sort_opts.t.class :>><a href="./<: $title.me :>?host=<: $host :>&sort=t"><i class="icon-time"></i> query time</a></li>
+        <li class="divider"></li>
+        <li><a href="#"><i class="icon-flag"></i> Help</a></li>
+      </ul>
+    </div> <!-- /well -->
+  </div>
+
+  <div class="span9">
+    <div class="accordion" id="accordion3">
+    : for $summarized -> $summary {
+      <blockquote>
+        <h3><: $summary.query :></h3>
+        <div class="accordion-group">
+          <div class="accordion-heading">
+            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion3" href="#collapse<: $~summary :>">
+              <h6>
+                Count: <: $summary.count :>&nbsp;&nbsp;
+                Time=<: $summary.time :>&nbsp;&nbsp;
+                Lock=<: $summary.lock :>&nbsp;&nbsp;
+                Rows=<: $summary.rows :>,&nbsp;&nbsp;
+                <: $summary.user :>
+              </h6>
+            </a>
+          </div>
+          <div id="collapse<: $~summary :>" class="accordion-body collapse">
+            <div class="accordion-inner">
+              <table class="table table-bordered table-condensed">
+                <tr>
+                  <th>id</th>
+                  <th>select_type</th>
+                  <th>table</th>
+                  <th>type</th>
+                  <th>possible_keys</th>
+                  <th>key</th>
+                  <th>key_len</th>
+                  <th>ref</th>
+                  <th>rows</th>
+                  <th>Extra</th>
+                </tr>
+              : for $summary.explain -> $explain {
+                <tr>
+                  <td><: $explain.id :></td>
+                  <td><: $explain.select_type :></td>
+                  <td><: $explain.table :></td>
+                  <td><: $explain.type :></td>
+                  <td><: $explain.possible_keys :></td>
+                  <td><: $explain.key :></td>
+                  <td><: $explain.key_len :></td>
+                  <td><: $explain.ref :></td>
+                  <td><: $explain.rows :></td>
+                  <td><: $explain.Extra :></td>
+                </tr>
+              : }
+              </table>
+            </div>
+          </div>
+        </div class="accordion-group">
+      </blockquote>
+    : }
+    <!-- for $summarized -> $summary -->
+    </div class="accordion" id="accordion3">
+  </div class="span9">
+</div class="row">
+
+</div><!-- /container -->
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
+    <script src="bootstrap/docs/assets/js/jquery.js"></script>
+    <script src="bootstrap/docs/assets/js/google-code-prettify/prettify.js"></script>
+    <script src="bootstrap/docs/assets/js/bootstrap-transition.js"></script>
+    <script src="bootstrap/docs/assets/js/bootstrap-alert.js"></script>
+    <script src="bootstrap/docs/assets/js/bootstrap-modal.js"></script>
+    <script src="bootstrap/docs/assets/js/bootstrap-dropdown.js"></script>
+    <script src="bootstrap/docs/assets/js/bootstrap-scrollspy.js"></script>
+    <script src="bootstrap/docs/assets/js/bootstrap-tab.js"></script>
+    <script src="bootstrap/docs/assets/js/bootstrap-tooltip.js"></script>
+    <script src="bootstrap/docs/assets/js/bootstrap-popover.js"></script>
+    <script src="bootstrap/docs/assets/js/bootstrap-button.js"></script>
+    <script src="bootstrap/docs/assets/js/bootstrap-collapse.js"></script>
+    <script src="bootstrap/docs/assets/js/bootstrap-carousel.js"></script>
+    <script src="bootstrap/docs/assets/js/bootstrap-typeahead.js"></script>
+    <script src="bootstrap/docs/assets/js/application.js"></script>
+
+    <!-- Analytics
+    ================================================== -->
+    <script>
+      var _gauges = _gauges || [];
+      (function() {
+        var t   = document.createElement('script');
+        t.type  = 'text/javascript';
+        t.async = true;
+        t.id    = 'gauges-tracker';
+        t.setAttribute('data-site-id', '4f0dc9fef5a1f55508000013');
+        t.src = '//secure.gaug.es/track.js';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(t, s);
+      })();
+    </script>
+
+  </body>
+</html>
+
