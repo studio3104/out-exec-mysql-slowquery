@@ -1,7 +1,7 @@
 out-exec-mysql-slowquery
 ========================
 ## Architecture
-[image]: http://image.slidesharecdn.com/chiba-pm1ltstudio3104-121020031129-phpapp02/95/slide-17-638.jpg
+![image] (http://image.slidesharecdn.com/chiba-pm1ltstudio3104-121020031129-phpapp02/95/slide-17-638.jpg)
 
 
 ## License
