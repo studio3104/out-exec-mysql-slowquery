@@ -1,5 +1,11 @@
 #!/usr/bin/env perl
 
+#
+# This code contains the modified "mysqldumpslow".
+# (line 78-224)
+# It is applied by the GPL2 license.
+#
+
 use MongoDB;
 use strict;
 use warnings;
@@ -100,6 +106,7 @@ get "/$title->{subtitles}->[1]" => sub {
   # Original version by Tim Bunce, sometime in 2000.
   # Further changes by Tim Bunce, 8th March 2001.
   # Handling of strings with \ and double '' by Monty 11 Aug 2001.
+
   my $self = shift;
   $title->{me} = $title->{subtitles}->[1];
 
