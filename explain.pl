@@ -11,8 +11,8 @@ $| = 1;
 
 my $mp = Data::MessagePack->new();
 
-my $db_user   = "root";
-my $db_passwd = "";
+my $db_user   = "td-agent";
+my $db_passwd = "td-agent";
 my $db_opt    = { RaiseError => 0, PrintError => 1 };
 my $handler   = DBIx::Handler->new( "DBI:mysql:database=information_schema:127.0.0.1", $db_user, $db_passwd, $db_opt );
 
